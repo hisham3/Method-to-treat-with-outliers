@@ -42,13 +42,13 @@ class OutliersTreatment:
         self._normal_tests = stats.normaltest(data[self._numerical_columns])[1]
         
     @staticmethod
-    def iqr(col_data):
-        q1, q3 = col_data.quantile([0.01, 0.99])
+    def iqr(col_data, **kwargs):
+        q1, q3 = col_data.quantile(kwargs["quantile"])
         iqr = q3 - q1
         return q1 - 1.5 * iqr, q3 + 1.5 * iqr, col_data # min_threshold, max_threshold, new_data_col
     
     @staticmethod
-    def z_score(col_data):
+    def z_score(col_data, **kwargs):
         return -3, 3, pd.Series(stats.zscore(col_data)) # min_threshold, max_threshold
     
     def fit(self):
@@ -58,7 +58,7 @@ class OutliersTreatment:
             # normal distribution test to choose which method iqr or zscore
             outlier_method = self.z_score if self._normal_tests[indx] >= .05 else self.iqr
             
-            min_thd, max_thd, new_data_col =  outlier_method(self.data[col])
+            min_thd, max_thd, new_data_col =  outlier_method(self.data[col], quantile=self.quantile)
             
             indices = new_data_col[(new_data_col < min_thd) | (new_data_col > max_thd)].index
             
