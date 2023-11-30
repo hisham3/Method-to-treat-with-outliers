@@ -75,7 +75,7 @@ class OutliersTreatment:
     def plot(self):
         assert hasattr(self, "new_data"), "You should perform the fit & transform functions first" #make sure that fit and transform are implemented
         
-        fig = plt.figure(figsize=(25, 30))
+        fig = plt.figure(figsize=(25, len(self._numerical_columns) * 3))
         fig.suptitle("Outliers Statistics")
         fig.subplots_adjust(hspace=0.5)
         sns.set_theme(style="whitegrid", palette="pastel")
