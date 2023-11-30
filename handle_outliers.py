@@ -27,9 +27,11 @@ class OutliersTreatment:
         self, 
         data: pd.DataFrame,
         columns: list = [],
+        quantile: list = [0.25, 0.75]
     ):
         # defining the input data
         self.data = data
+        self.quantile = quantile
         # determine only the numerical columns
         self._numerical_columns = data[columns if not pd.Index(columns).empty else data.columns].select_dtypes(include=np.number).columns
         
@@ -41,7 +43,7 @@ class OutliersTreatment:
         
     @staticmethod
     def iqr(col_data):
-        q1, q3 = col_data.quantile([0.25, 0.75])
+        q1, q3 = col_data.quantile([0.01, 0.99])
         iqr = q3 - q1
         return q1 - 1.5 * iqr, q3 + 1.5 * iqr, col_data # min_threshold, max_threshold, new_data_col
     
