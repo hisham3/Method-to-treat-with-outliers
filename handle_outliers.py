@@ -27,11 +27,13 @@ class OutliersTreatment:
         self, 
         data: pd.DataFrame,
         columns: list = [],
-        quantile: list = [0.25, 0.75]
+        quantile: list = [0.25, 0.75],
+        reset_index: bool = True
     ):
         # defining the input data
         self.data = data
         self.quantile = quantile
+        self.reset_index = reset_index
         # determine only the numerical columns
         self._numerical_columns = data[columns if not pd.Index(columns).empty else data.columns].select_dtypes(include=np.number).columns
         
@@ -69,7 +71,10 @@ class OutliersTreatment:
     def transform(self):
         assert hasattr(self, "outliers_indices_"), "You should perform the fit function first" # make sure that fit is implemented
         
-        self.new_data = self.data.drop(index=self.outliers_indices_).reset_index(drop=True)
+        self.new_data = self.data.drop(index=self.outliers_indices_)
+        
+        if reset_index: self.new_data = self.new_data.reset_index(drop=True)
+            
         return self.new_data
     
     def plot(self):
