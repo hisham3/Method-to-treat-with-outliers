@@ -73,7 +73,7 @@ class OutliersTreatment:
         
         self.new_data = self.data.drop(index=self.outliers_indices_)
         
-        if reset_index: self.new_data = self.new_data.reset_index(drop=True)
+        if self.reset_index: self.new_data = self.new_data.reset_index(drop=True)
             
         return self.new_data
     
